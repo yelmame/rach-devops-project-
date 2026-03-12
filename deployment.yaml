@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-sdk-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: go-sdk-app
+  template:
+    metadata:
+      labels:
+        app: go-sdk-app
+    spec:
+      containers:
+      - name: go-sdk-app
+        image: YOUR-ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/go-sdk-app:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-sdk-service
+spec:
+  selector:
+    app: go-sdk-app
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
